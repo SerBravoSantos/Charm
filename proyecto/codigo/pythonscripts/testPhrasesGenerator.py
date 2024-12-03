@@ -5,8 +5,7 @@ from string import printable, whitespace
 #from translate import Translator  # PIP INSTALL TRANSLATE
 import inflect
 from word2number import w2n
-from yandex.Translater import Translater
-
+from yandex.Translater import Translate
 import stanfordnlp
 #from pattern.en import *
 #from PyDictionary import PyDictionary
@@ -42,12 +41,8 @@ def getNearbyKeys(key, keyboardConfig):
 	if i == 0: # linea 0
 		if j==0: #izquierda linea 0
 			nbkeys = [keyboardConfig[i][j+1], keyboardConfig[i+1][j+1], keyboardConfig[i+1][j]]
-#			for elem in [keyboardConfig[i][j-1], keyboardConfig[i+1][j-1]]:
-#				nbkeys.remove(elem)
 		elif j==len(keyboardConfig[i])-1: # derecha linea 0
 			nbkeys = [keyboardConfig[i+1][j], keyboardConfig[i+1][j-1], keyboardConfig[i][j-1]]
-#			for elem in [keyboardConfig[i][j+1], keyboardConfig[i+1][j+1]]:
-#				nbkeys.remove(elem)
 		else:
 			nbkeys = [keyboardConfig[i][j+1], keyboardConfig[i+1][j+1], keyboardConfig[i+1][j], keyboardConfig[i+1][j-1], keyboardConfig[i][j-1]]
 
@@ -55,12 +50,8 @@ def getNearbyKeys(key, keyboardConfig):
 		if j==0: #izquierda linea 1 o 2
 			nbkeys = [keyboardConfig[i-1][j], keyboardConfig[i-1][j+1], keyboardConfig[i][j+1], 
 				keyboardConfig[i+1][j+1], keyboardConfig[i+1][j]]
-#			for elem in [keyboardConfig[i][j-1], keyboardConfig[i-1][j-1], keyboardConfig[i+1][j-1]]:
-#				nbkeys.remove(elem)
 		elif j==len(keyboardConfig[i])-1: # derecha linea 1 o 2 
 			nbkeys = [keyboardConfig[i-1][j-1], keyboardConfig[i-1][j], keyboardConfig[i+1][j-1], keyboardConfig[i][j-1]]
-#			for elem in [keyboardConfig[i][j+1], keyboardConfig[i-1][j+1], keyboardConfig[i+1][j+1]]:
-#				nbkeys.remove(elem)
 		else:
 			nbkeys = [keyboardConfig[i-1][j-1], keyboardConfig[i-1][j], keyboardConfig[i-1][j+1], keyboardConfig[i][j+1], 
 						keyboardConfig[i+1][j+1], keyboardConfig[i+1][j], keyboardConfig[i+1][j-1], keyboardConfig[i][j-1]]
@@ -68,17 +59,10 @@ def getNearbyKeys(key, keyboardConfig):
 
 		if j==0: #izquierda linea 3
 			nbkeys = [keyboardConfig[i-1][j], keyboardConfig[i-1][j+1], keyboardConfig[i][j+1]]
-#			for elem in [keyboardConfig[i][j-1], keyboardConfig[i-1][j-1]]:
-#				nbkeys.remove(elem)
 		elif j==len(keyboardConfig[i])-1: # derecha linea 3
 			nbkeys = [keyboardConfig[i-1][j-1], keyboardConfig[i-1][j], keyboardConfig[i][j-1]]
-#			for elem in [keyboardConfig[i][j+1], keyboardConfig[i-1][j+1]]:
-#				nbkeys.remove(elem)
 		else:
-			
 			nbkeys = [keyboardConfig[i-1][j-1], keyboardConfig[i-1][j], keyboardConfig[i-1][j+1], keyboardConfig[i][j+1], keyboardConfig[i][j-1]]
-	
-
 	return nbkeys
 
 """
@@ -237,7 +221,6 @@ def changeWordToNumber(utt): # TO FIX: for large numbers, it recognizes one by o
  	This function will submit the utterance to a traduction chain that will change the structure of the utterance 
 	and will simplify it normally.
 """
-# TIENEN UN MAXIMO DE TRADUCCIONES PERMITIDAS, VER SI HAY ALGUNO GRATUITO QUE PERMITA HACER MÁS TRADUCCIONES.
 
 def traductionChained(utt, languages):
 	
@@ -260,135 +243,12 @@ def traductionChained(utt, languages):
 		utt = tr.translate()
 		tr.set_text(utt)
 
-	#print(utt)
 	return utt
-#	translator = Translator()
-#	oriLang = translator.detect(utt)
-#	return
-
-#	lanAux = originLang
-#
-#	for language in languages:
-#		translator= Translator(from_lang=lanAux, to_lang=language)
-#		utt = translator.translate(utt)
-#		lanAux = language
-#
-#	translator = Translator(from_lang=lanAux, to_lang=originLang) # We convert it to the original language	
-#	utt = translator.translate(utt)
-#
-#	return utt.replace("&#39;", "'")
 
 def randomTraductionChained(utt, numLanguages=2):
 	languagesSupported = ["az","ml","sq","mt","am","mk","en","mi","ar","mr","hy","mhr","af","mn","eu","de","ba","ne","be","no","bn","pa","my","pap","bg","fa","bs","pl","cy","pt","hu","ro","vi","ru","ht","ceb","gl","sr","nl","si","mr","sk","el","sl","ka","sw","gu","su","da","tg","he","th","yi","tl","id","ta","ga","tt","it","te","is","tr","es","udm","kk","uz","kn","uk","ca","ur","ky","fi","zh","fr","ko","hi","xh","hr","km","cs","lo","sv","la","gd","lv","et","lt","eo","lb","jv","mg","ja","ms"]
 	languages = sample(languagesSupported, numLanguages)
 	return traductionChained(utt, languages)
-#	languages = sample(LANGUAGES.keys(), numLanguages)
-#	translator = Translator()
-#	oriLang = translator.detect(utt).lang
-#
-#	languages.insert(0, oriLang)
-#	languages.append(oriLang)
-#
-#	print(languages)
-#	print(utt)
-#
-#	for ind, language in enumerate(languages):
-#		if not(ind == len(languages)-1):
-#			print(language, languages[ind+1])
-#			utt = translator.translate(utt, src=language, dest=languages[ind+1]).text
-#			print(utt)
-#	print("\n______________________________________\n")
-#
-#	return
-
-
-"""
-This function will convert a passive voice sentence into an active voice one.
-To do that
-EXAMPLE:   can I get three bedroom apartments please
-
-1) Make the object of the active sentence into the subject of the passive sentence.
-	three bedroom apartments (everything related with the object appartments will be part of the subject aswell)
-
-2) Use the verb “to be” in the same tense as the main verb of the active sentence.
-	three bedroom appartments can be 
-
-3) Use the past participle of the main verb of the active sentence.
-	three bedroom appartments can be taken (by me)
-
-example:
-	Active voice: I will take a quesarito with extra cheese to eat please.
-			Subject(I), Verb(will take), object(quesarito), 		
-	Passive voice: the quesarito with extra cheese will be taken to eat (by me).
-"""
-
-"""
-['[<Token index=1;words=[<Word index=1;text=can;lemma=can;upos=AUX;xpos=MD;feats=VerbForm=Fin;governor=3;dependency_relation=aux>]>, 
-   <Token index=2;words=[<Word index=2;text=I;lemma=I;upos=PRON;xpos=PRP;feats=Case=Nom|Number=Sing|Person=1|PronType=Prs;governor=3;dependency_relation=nsubj>]>, 
-   <Token index=3;words=[<Word index=3;text=get;lemma=get;upos=VERB;xpos=VB;feats=VerbForm=Inf;governor=0;dependency_relation=root>]>, 
-   <Token index=4;words=[<Word index=4;text=three;lemma=three;upos=NUM;xpos=CD;feats=NumType=Card;governor=6;dependency_relation=nummod>]>, 
-   <Token index=5;words=[<Word index=5;text=bedroom;lemma=bedroom;upos=NOUN;xpos=NN;feats=Number=Sing;governor=6;dependency_relation=compound>]>, 
-   <Token index=6;words=[<Word index=6;text=apartments;lemma=apartment;upos=NOUN;xpos=NNS;feats=Number=Plur;governor=3;dependency_relation=obj>]>, 
-   <Token index=7;words=[<Word index=7;text=please;lemma=please;upos=INTJ;xpos=UH;feats=_;governor=3;dependency_relation=discourse>]>]'
-
-[
-<Word index=1;text=I;		lemma=I;		upos=PRON;	xpos=PRP;	feats=Case=Nom|Number=Sing|Person=1|PronType=Prs;	governor=2;	dependency_relation=nsubj>, 
-<Word index=2;text=want;	lemma=want;		upos=VERB;	xpos=VBP;	feats=Mood=Ind|Tense=Pres|VerbForm=Fin;				governor=0;	dependency_relation=root>, 
-<Word index=3;text=to;		lemma=to;		upos=PART;	xpos=TO;	feats=_;											governor=4;	dependency_relation=mark>, 
-<Word index=4;text=order;	lemma=order;	upos=VERB;	xpos=VB;	feats=VerbForm=Inf;									governor=2;	dependency_relation=xcomp>, 
-
-<Word index=5;text=a;		lemma=a;		upos=DET;	xpos=DT;	feats=Definite=Ind|PronType=Art;					governor=6;	dependency_relation=det>, 
-<Word index=6;text=flight;	lemma=flight;	upos=NOUN;	xpos=NN;	feats=Number=Sing;									governor=4;	dependency_relation=obj>, 
-<Word index=7;text=to;		lemma=to;		upos=ADP;	xpos=IN;	feats=_;											governor=9;	dependency_relation=case>, 
-<Word index=8;text=New;		lemma=New;		upos=PROPN;	xpos=NNP;	feats=Number=Sing;									governor=9;	dependency_relation=compound>,
-<Word index=9;text=York;	lemma=York;		upos=PROPN;	xpos=NNP;	feats=Number=Sing;									governor=6;	dependency_relation=nmod>
-]
-
-[<Word index=1;text=I;		lemma=I;		upos=PRON;	xpos=PRP;	feats=Case=Nom|Number=Sing|Person=1|PronType=Prs;	governor=4;	dependency_relation=nsubj>, 
-
-<Word index=2;text=do;		lemma=do;		upos=AUX;	xpos=VBP;	feats=Mood=Ind|Tense=Pres|VerbForm=Fin;				governor=4;	dependency_relation=aux>, 
-<Word index=3;text=n't;		lemma=not;		upos=PART;	xpos=RB;	feats=_;											governor=4;	dependency_relation=advmod>, 
-<Word index=4;text=want;	lemma=want;		upos=VERB;	xpos=VB;	feats=VerbForm=Inf;									governor=0;	dependency_relation=root>, 
-<Word index=5;text=to;		lemma=to;		upos=PART;	xpos=TO;	feats=_;											governor=6;	dependency_relation=mark>,
-
-<Word index=6;text=order;	lemma=order;	upos=VERB;	xpos=VB;	feats=VerbForm=Inf;									governor=4;	dependency_relation=xcomp>, 
-
-<Word index=7;text=the;		lemma=the;		upos=DET;	xpos=DT;	feats=Definite=Def|PronType=Art;					governor=8;	dependency_relation=det>, 
-<Word index=8;text=same;	lemma=same;		upos=ADJ;	xpos=JJ;	feats=Degree=Pos;									governor=6;	dependency_relation=obj>]
-
-
-ITS IMPORTANT TO FILTER THE PREFIXES AND SUFIXES THAT MAY BE INTRODUCED IN THE UTT,
-FOR THAT WE CAN CHECK IF THERE ARE SEVERAL SENTENCES. (IT MAY NOT BE NECCESARY IF WE JUST USE OBJECT + TO BE + VERB)
-
-Algorythim:
-	1. Find the token with dependency_relation = obj
-	2. Find the words (if there are) which governor number is the index of the object
-	3. Those words in the exact same order will be the subject of our phrase
-    
-    4. place the verb 'to be' with the tense of the verb (root) in the active voice
-    5. Use the
-
-
-ES un poco más dificil de lo imaginado porque no siempre es así, hay veces que hay verbos auxiliares 
-como dont o want
-
-i dont want to eat an orange
-an orange dont want to be eaten
-
-i eat an orange
-an orange is eaten
-
-i dont eat an orange 
-an orange is not eaten
-
-i dont want to order the same
-the same dont want to be ordered
-
-"""
-# Cuarentena SERIA---------------------------------------------------------------------------------------------------------------------------
-
-
-
 
 def activeToPassive(utt, nlp):
 
@@ -497,18 +357,8 @@ def activeToPassive(utt, nlp):
 
 		print("\n*****************\n", conjugate(doc.sentences[0].words[int(indexRoot)-1], tense=PAST+PARTICIPLE, parse=True),"\n*****************\n ")
 		 
-	
-
-	# In this case we cannot convert the phrase into passive
 	return utt
-	#return str([str(doc.sentences[0].tokens), "\n", str(doc.sentences[0])])
 	
-
-def passiveToActive(utt):
-	return
-
-# FIN DE CUARENTENA
-
 """
 This function will change all the adjectives of a utt to synonims.
 First we have to get all the adjectives that the oration has.
@@ -532,7 +382,6 @@ def antonyms(term):
 def convertAdjectivesToSynonyms(utt, percentage, entitiesIndex, nlp): 
 
 	def isAmod(word):
-
 		doc = nlp(str(word))
 		for wordAux in doc.sentences[0].words:
 #			print(wordAux.upos)
@@ -546,22 +395,16 @@ def convertAdjectivesToSynonyms(utt, percentage, entitiesIndex, nlp):
 	utt = utt.split(' ')
 
 	for i, untknWord in enumerate(utt):
-#		print(untknWord)
 		if isAmod(untknWord) and not i in entitiesIndex:
 			synonymsList.append(synonyms(untknWord))
 			adjIndex.append(i)
 
-#	print("synonymsList: ", synonymsList)
-
 	if synonymsList:
 		if synonymsList[0]:
-#			print("adjIndex: ", adjIndex)
 			for count, i in enumerate(adjIndex):
 				if synonymsList[count]:
 					randomN = randint(0, len(synonymsList[count])-1)
 					changeSin = choices([True, False], [percentage/100, 1-percentage/100])[0]
-#					print("randomN: ", randomN, "count: ", count)
-#					print("utt: ", utt)
 					if changeSin:
 						utt[i] = synonymsList[count][randomN]
 
@@ -573,7 +416,6 @@ def convertAdjectivesToAntonyms(utt, percentage, entitiesIndex, nlp):
 
 		doc = nlp(str(word))
 		for wordAux in doc.sentences[0].words:
-	#		print(wordAux.upos)
 			if wordAux.upos == 'ADJ':
 				return True
 		return False
@@ -584,22 +426,16 @@ def convertAdjectivesToAntonyms(utt, percentage, entitiesIndex, nlp):
 	utt = utt.split(' ')
 
 	for i, untknWord in enumerate(utt):
-#		print(untknWord)
 		if isAmod(untknWord) and not i in entitiesIndex:
 			antonymsList.append(antonyms(untknWord))
 			adjIndex.append(i)
 
-#	print("antonymsList: ", antonymsList)
-
 	if antonymsList:
 		if antonymsList[0]:
-#			print("adjIndex: ", adjIndex)
 			for count, i in enumerate(adjIndex):
 				if antonymsList[count]:
 					randomN = randint(0, len(antonymsList[count])-1)
 					changeSin = choices([True, False], [percentage/100, 1-percentage/100])[0]
-	#				print("randomN: ", randomN, "count: ", count)
-	#				print("utt: ", utt)
 					if changeSin:	
 						utt[i] = antonymsList[count][randomN] #HAY UN POSIBLE ERROR AQUÍ
 
@@ -643,100 +479,13 @@ def convertObjectsToSynonyms(utt, percentage, entitiesIndex, nlp):
 
 	return " ".join(utt)
 
-#def convertAdjectivesToSynonyms(utt, entitiesIndex, nlp): #(falla con la frase: Can you pretty please offer me that incredible job, i want to buy a big red car")
-#
-#	print (dictionary.meaning("indentation"))
-#	synonymsList = [] 
-#	adjIndex = []
-#	discountIndex = 1
-#	doc = nlp(utt)
-#	utt = utt.split(' ')
-#	
-#	
-#		
-#	
-#
-#	for word in doc.sentences[0].words:
-#		print("word: ", word)
-#		if '\'' in word.text: #caso de contracciones
-#			discountIndex += 1
-#
-#		if word.dependency_relation == 'amod' and not (int(word.index) in entitiesIndex):
-#			inWord = int(word.index) - discountIndex
-#			synonymsList.append(synonyms(word.lemma))
-#			adjIndex.append(inWord)
-#
-#	print("synonymsList: ", synonymsList)
-#
-#	if synonymsList:
-#		if synonymsList[0]:
-#			print("adjIndex: ", adjIndex)
-#			for count, i in enumerate(adjIndex):
-#				randomN = randint(0, len(synonymsList[count])-1)
-#				print("randomN: ", randomN, "count: ", count)
-#				print("utt: ", utt)
-#				utt[i] = synonymsList[count][randomN] #HAY UN POSIBLE ERROR AQUÍ
-#
-#	return " ".join(utt)
-#
-#
-#def convertAdjectivesToAntonyms(utt, entitiesIndex, nlp):
-#	antonymsList = [] 
-#	adjIndex = []
-#	discountIndex = 1
-#	doc = nlp(utt)
-#	utt = utt.split(' ')
-#	for word in doc.sentences[0].words:
-#		if '\'' in word.text: #caso de contracciones
-#			discountIndex += 1
-#		if word.dependency_relation == 'amod' and not (int(word.index) in entitiesIndex):
-#			inWord = int(word.index) - discountIndex
-#			antonymsList.append(antonyms(word.lemma))
-#			adjIndex.append(inWord)
-#
-#	if antonymsList:
-#		if antonymsList[0]:
-#			for count, i in enumerate(adjIndex):
-#				randomN = randint(0, len(antonymsList[count])-1)
-#				utt[i] = antonymsList[count][randomN]
-#
-#	return " ".join(utt)
-#
-##### VER AHORA
-#def convertObjectsToSynonyms(utt, entitiesIndex, nlp):
-#	synonymsList = [] 
-#	objIndex = []
-#	discountIndex = 1
-#	doc = nlp(utt)
-#	utt = utt.split(' ')
-#	for word in doc.sentences[0].words:
-#		if '\'' in word.text: #caso de contracciones
-#			discountIndex += 1
-#
-#		if word.dependency_relation == 'obj' and not (int(word.index) in entitiesIndex):
-#			inWord = int(word.index) - discountIndex
-#			synonymsList.append(synonyms(word.lemma))
-#			objIndex.append(inWord)
-#
-#	if synonymsList:
-#		if synonymsList[0]:
-#			for count, i in enumerate(objIndex):
-#				randomN = randint(0, len(synonymsList[count])-1)
-#				utt[i] = synonymsList[count][randomN]
-#
-#	return " ".join(utt)
 
-
-
-#### futura implementación
-#### futura implementación
 def convertAdverbsToSynonyms(utt, percentage, entitiesIndex, nlp): 
 
 	def isAmod(word):
 
 		doc = nlp(str(word))
 		for wordAux in doc.sentences[0].words:
-#			print(wordAux.upos)
 			if wordAux.upos == 'ADV':
 				return True
 		return False
@@ -747,22 +496,17 @@ def convertAdverbsToSynonyms(utt, percentage, entitiesIndex, nlp):
 	utt = utt.split(' ')
 
 	for i, untknWord in enumerate(utt):
-#		print(untknWord)
 		if isAmod(untknWord) and not i in entitiesIndex:
 			synonymsList.append(synonyms(untknWord))
 			adjIndex.append(i)
 
-#	print("synonymsList: ", synonymsList)
 
 	if synonymsList:
 		if synonymsList[0]:
-#			print("adjIndex: ", adjIndex)
 			for count, i in enumerate(adjIndex):
 				if synonymsList[count]:
 					randomN = randint(0, len(synonymsList[count])-1)
 					changeSin = choices([True, False], [percentage/100, 1-percentage/100])[0]
-#					print("randomN: ", randomN, "count: ", count)
-#					print("utt: ", utt)
 					if changeSin:	
 						utt[i] = synonymsList[count][randomN] #HAY UN POSIBLE ERROR AQUÍ
 
@@ -774,7 +518,6 @@ def convertAdverbsToAntonyms(utt, percentage, entitiesIndex, nlp):
 
 		doc = nlp(str(word))
 		for wordAux in doc.sentences[0].words:
-	#		print(wordAux.upos)
 			if wordAux.upos == 'ADV':
 				return True
 		return False
@@ -785,47 +528,23 @@ def convertAdverbsToAntonyms(utt, percentage, entitiesIndex, nlp):
 	utt = utt.split(' ')
 
 	for i, untknWord in enumerate(utt):
-#		print(untknWord)
 		if isAmod(untknWord) and not i in entitiesIndex:
 			antonymsList.append(antonyms(untknWord))
 			adjIndex.append(i)
 
-#	print("antonymsList: ", antonymsList)
-
 	if antonymsList:
 		if antonymsList[0]:
-#			print("adjIndex: ", adjIndex)
 			for count, i in enumerate(adjIndex):
 				if antonymsList[count]:
 					randomN = randint(0, len(antonymsList[count])-1)
 					changeSin = choices([True, False], [percentage/100, 1-percentage/100])[0]
-	#				print("randomN: ", randomN, "count: ", count)
-	#				print("utt: ", utt)
+
 					if changeSin:	
 						utt[i] = antonymsList[count][randomN] #HAY UN POSIBLE ERROR AQUÍ
 
 	return " ".join(utt)
 
 
-
-
-"""
- 	We can convert the utterances in many different ways:
-		1. Use all the generative functions over the utterance
-		2. Use randomly one function over the utterance
-		3. We could also give some priority to some phrases
-		4. Set a parameter with the functions to use, and another for the probability of using one or another
-"""
-"""
-	changeNumberToWord, changeWordToNumber: We could use both methods in every utt with a probability associated 
-	We can upgrade mutateUtterance so it gets the distances of the nearby keys in the keyboard depending on the 
-	configuration of the keyboard.
-
-	An interesting thing to do would be to check the effectivity of each method and balance the parameters
-WE CAN ACTUALLY CHECK IF THE UTTERANCE CAN BE SYNTACTICALLY MODIFIED:
-	IF IT HAS 2 SENTENCES IN THE SAME UTT...
-
-"""
 
 def generateUtterances(functions, chatbot, dirFunction, distribution, parameters=[keyboardQWERTYSpanish, 3, 0, ["de", "pl", "zh"], 2, [0], 50], extension="utterance.txt"):
 
@@ -884,18 +603,8 @@ def generateUtterances(functions, chatbot, dirFunction, distribution, parameters
 			#print(generatedUtterances)
 			writeGeneratedUttFile(inputFilename, botDir, dirFunction, firstLine, generatedUtterances)
 
-
-
-
-#	for utt in inputUtts:
-#		print(utt)
-#		print(mutateUtterance(utt, 2, 10), "\n______________________________________\n")
-
 if __name__ == "__main__":
 
 	generateUtterances(["mutateUtterance", "mutateUtteranceWithDistances", "deleteChars", "traductionChained", "randomTraductionChained", "changeNumberToWord", "changeWordToNumber", 
 						"activeToPassive", "convertAdjectivesToSynonyms", "convertAdjectivesToAntonyms", "convertObjectsToSynonyms", "noMutation"], [0, 0, 0, 0, 0, 0, 0.2, 0.2, 0.2, 0.2, 0.2, 0])
 
-
-
-	
