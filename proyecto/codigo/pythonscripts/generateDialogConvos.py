@@ -50,7 +50,7 @@ def getEntities(dirPath):
 
 	for entInfo in entInfoFiles:
 		with open(entInfo) as file:
-		    entInfoDict = json.load(file)
+			entInfoDict = json.load(file)
 
 	for entVal in entValFiles:
 		with open(entVal) as file:
@@ -63,7 +63,7 @@ def getEntities(dirPath):
 			#	entityDict[entInfoDict['name']].append(entVal['synonyms'])   
 
 	return entityDict
-	
+
 """
 getIntents obtiene la información de los intents de un chatbot, se pueden obtener los contextos, parámetros respuestas....
 """
